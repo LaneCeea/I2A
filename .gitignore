@@ -1,3 +1,7 @@
 .vscode
 obj
 bin
+
+# LaTeX
+**/*.aux
+**/*.log

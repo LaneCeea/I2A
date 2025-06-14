@@ -1,0 +1,128 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, total={17.18cm, 24.62cm}]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Define the custom pseudocode style
+\lstdefinestyle{pseudocode}{
+    basicstyle=\ttfamily\normalsize,
+    keywordstyle=\bfseries\color{blue},
+    commentstyle=\itshape\color{gray},
+    stringstyle=\color{red},
+    numberstyle=\small\color{gray},
+    % Define your pseudocode keywords - fixed
+    language={},
+    keywords={if, else, while, for, to, return, and},
+    % Additional keywords for data types
+    keywordstyle=[2]\color{purple}\bfseries,
+    % Frame and appearance
+    frame=single,
+    frameround=tttt,
+    framesep=5pt,
+    numbers=left,
+    numbersep=10pt,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b,
+    % Background color (optional)
+    backgroundcolor=\color{gray!5},
+    % Line spacing
+    lineskip=2pt
+}
+
+% Create the pseudocode environment - FIXED: use lstnewenvironment
+\lstnewenvironment{pseudocode}[1][]
+{%
+    \lstset{style=pseudocode, #1}%
+}
+{}
+
+\begin{document}
+
+\section*{Problem}
+
+\noindent\textbf{Input:} A sequence of \(n\) numbers \(\langle a_0, a_1, \dots, a_{n-1} \rangle\).
+
+\noindent\textbf{Output:} A reordering \(\langle a_0', a_1', \dots, a_{n-1}' \rangle\) of the input sequence such that \(a_0' \leq a_1' \leq \dots \leq a_{n-1}'\).
+
+\section*{Algorithm}
+
+\begin{pseudocode}
+insertion-sort(A[0 .. n-1])
+    for i = 1 to n - 1
+        key = A[i]
+        j = i
+        while j > 0 and A[j-1] > key
+            j = j - 1
+        if i != j
+            A[j+1 .. i] = A[j .. i-1]
+            A[j] = key
+\end{pseudocode}
+
+\section*{Correctness}
+
+Let's define a \textbf{\textit{loop invariant}} \(\mathcal{L}\) to help us prove the correctness of the algorithm:
+
+\(\mathcal{L}(i)\): At the start of the iteration \(i\) of the for loop, the subarray \(A[0 : i-1]\) contains the same elements originally in the input, but is now sorted.
+
+\begin{enumerate}
+    \item \textbf{Initialization:} The loop invariant is true before the first iteration of the loop.
+
+    Trivially, \(A[0 : 0]\) is just a single element, thus is sorted and the same as the original input. \(\mathcal{L}(1)\) is true.
+
+    \item \textbf{Maintenance:} If the loop invariant is true before an iteration of the loop, then it remains true before the next iteration.
+
+    Suppose that \(\mathcal{L}(i)\) is true, that is, at the start of the iteration \(i\), the subarray \(A[0 : i-1]\) contains the same elements originally in the input and is sorted:
+    \[
+        A[0] \leq A[1] \leq \dots \leq A[i-1].
+    \]
+    In the while loop, we find the correct place to insert \(A[i]\). Specifically, there are two possible termination on line 5.
+    \begin{enumerate}
+        \item Terminates on \(j = 0\). In this case, we have that all elements from the subarray \(A[0 : i - 1]\) is greater than \(key\):
+        \[
+            key < A[0] \leq A[1] \leq \dots \leq A[i-1]
+        \]
+
+        \item Terminates on \(A[j - 1] \leq key\). This means that we found \(j\) such that
+        \[
+            A[0] \leq A[1] \leq \dots \leq A[j-1] \leq key < A[j] \leq \dots \leq A[i-1].
+        \]
+    \end{enumerate}
+
+    Now we consider two cases at line 7.
+    \begin{enumerate}
+        \item If \(i = j\), then we have
+        \[
+            A[0] \leq A[1] \leq \dots \leq A[i-1] \leq A[i].
+        \]
+        The subarray \(A[0 : i]\) is sorted and unmodified in this iteration.
+
+        \item If \(i \neq j\), then we move all the element from the subarray \(A[j : i-1]\) by one position to the right, and assign the original value of \(A[i]\) to \(A[j]\) via \(key\). Now we have
+        \[
+            A[0] \leq A[1] \leq \dots \leq A[j-1] \leq A[j] < A[j+1] \leq \dots \leq A[i].
+        \]
+        The subarray \(A[0 : i]\) is sorted. And it still contains the original elements since
+        \begin{itemize}
+            \item \(A[0 : j-1]\) is untouched;
+            \item the new \(A[j+1 : i]\) is one-to-one to the original \(A[j : i-1]\);
+            \item the new \(A[j]\) is the original \(A[i]\).
+        \end{itemize}
+    \end{enumerate}
+
+    In both cases, after the iteration completes, the subarray \(A[0 : i]\) is sorted and contains the same elements as the original input \(A[0 : i]\). Therefore, at the start of the next iteration \(i+1\), \(\mathcal{L}(i+1)\) holds.
+
+    \item \textbf{Termination:} When the loop terminates, the invariant gives us a useful property that helps show that that algorithm is correct.
+
+    After the last iteration of the loop \(i = n-1\) completes, the maintenance property ensures that \(\mathcal{L}(n)\) is true: the subarray \(A[0 : n-1]\) contains the same elements originally in the input, but is now sorted. This is exactly the desired output.
+\end{enumerate}
+
+Therefore, the algorithm is correct and thus solve the sorting problem.
+
+\end{document}
