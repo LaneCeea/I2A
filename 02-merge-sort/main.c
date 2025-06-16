@@ -5,36 +5,35 @@
 
 // the range [l, m) and [m, r) is sorted, merge them into tmp, and store them back to arr
 void _merge(sarray* arr, sarray* tmp, sarray_size_t l, sarray_size_t m, sarray_size_t r) {
-    sarray_size_t size = r - l;
     sarray_size_t p = l;
     sarray_size_t q = m;
     
-    for (sarray_size_t i = 0; i < size; ++i) {
+    for (sarray_size_t i = l; i < r; ++i) {
         // Only one of the below special terminating conditions is possible,
         // since if [l, m) and [m, r) are all in result, then i equal size,
         // which will never happen inside this loop.
         if (p >= m) {
             // [l, m) is all in result, append [q, r)
-            memcpy(tmp->data + l + i, arr->data + q, sizeof(sarray_data_t) * (r - q));
+            memcpy(tmp->data + i, arr->data + q, sizeof(sarray_data_t) * (r - q));
             break;
         } else if (q >= r) {
             // [m, r) is all in result, append [p, m)
-            memcpy(tmp->data + l + i, arr->data + p, sizeof(sarray_data_t) * (m - p));
+            memcpy(tmp->data + i, arr->data + p, sizeof(sarray_data_t) * (m - p));
             break;
         }
 
         // find smallest
         if (arr->data[p] <= arr->data[q]) {
-            tmp->data[l + i] = arr->data[p];
+            tmp->data[i] = arr->data[p];
             ++p;
         } else {
-            tmp->data[l + i] = arr->data[q];
+            tmp->data[i] = arr->data[q];
             ++q;
         }
     }
 
     // store the result back to arr
-    memcpy(arr->data + l, tmp->data + l, sizeof(sarray_data_t) * size);
+    memcpy(arr->data + l, tmp->data + l, sizeof(sarray_data_t) * (r - l));
 }
 
 // sort the range [l, r)
