@@ -1,4 +1,18 @@
-CC = gcc
+# Detect platform
+ifeq ($(OS),Windows_NT)
+    PLATFORM := Windows
+    CC := gcc
+    EXE_EXT := .exe
+    RM := rmdir /s /q
+    PATHSEP := \\
+else
+    PLATFORM := Linux
+    CC := gcc
+    EXE_EXT :=
+    RM := rm -rf
+    PATHSEP := /
+endif
+
 CFLAGS = -std=c11 -O2 -Wall -Wextra -I.
 UTIL_DIR = utils
 OBJ_DIR = obj
@@ -20,14 +34,33 @@ utils: $(UTIL_OBJS)
 
 # Rule to build chapter binaries
 $(TARGETS): %: %/main.c $(UTIL_OBJS)
+ifeq ($(PLATFORM),Windows)
+	@if not exist $(subst /,\,$(BIN_DIR)) mkdir $(subst /,\,$(BIN_DIR))
+else
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $< $(UTIL_OBJS) -o $(BIN_DIR)/$@
+endif
+	$(CC) $(CFLAGS) $< $(UTIL_OBJS) -o $(BIN_DIR)/$@$(EXE_EXT)
 
 # Rule to build each .o from utils/
 $(OBJ_DIR)/%.o: $(UTIL_DIR)/%.c
+ifeq ($(PLATFORM),Windows)
+	@if not exist $(subst /,\,$(OBJ_DIR)) mkdir $(subst /,\,$(OBJ_DIR))
+else
 	@mkdir -p $(OBJ_DIR)
+endif
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+ifeq ($(PLATFORM),Windows)
+	@if exist $(OBJ_DIR) $(RM) $(subst /,\,$(OBJ_DIR))
+	@if exist $(BIN_DIR) $(RM) $(subst /,\,$(BIN_DIR))
+else
+	$(RM) $(OBJ_DIR) $(BIN_DIR)
+endif
+
+# Show detected platform (optional - for debugging)
+info:
+	@echo Platform: $(PLATFORM)
+	@echo Compiler: $(CC)
+	@echo Executable extension: $(EXE_EXT)

@@ -16,7 +16,7 @@ The `utils/` folder contains helper data structures and utility functions used a
 - **C Compiler**: GCC (GNU Compiler Collection)
 - **Standard**: C11
 - **Build System**: Make
-- **Platform**: Linux (Windows support coming soon)
+- **Platform**: Linux and Windows
 - **LaTeX**: For compiling analysis documents (optional, PDFs are included)
 
 ## Building and Running
@@ -37,14 +37,11 @@ The executable will be created in the `bin/` directory.
 # Compile insertion sort
 make 02-insertion-sort
 
-# Run the program
+# Run the program on Linux
 ./bin/02-insertion-sort
-```
 
-### Build All Algorithms
-
-```bash
-make all
+# Run the program on Windows
+./bin/02-insertion-sort.exe
 ```
 
 ### Clean Build Files
