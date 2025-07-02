@@ -1,10 +1,10 @@
+#include "utils/timer.h"
 #include "utils/sarray.h"
 #include "utils/pcg32.h"
 
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <time.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // subarray
@@ -272,15 +272,20 @@ int main() {
     for (int trial = 0; trial < n_trial; ++trial) {
         sarray_random(&arr, lower, upper);
 
-        clock_t start1 = clock();
-        struct subarray ret1 = hybrid(&arr);
-        clock_t end1 = clock();
-        long time1 = end1 - start1;
-        
-        clock_t start2 = clock();
-        struct subarray ret2 = kadane(&arr);
-        clock_t end2 = clock();
-        long time2 = end2 - start2;
+        struct subarray ret1, ret2;
+        double time1, time2;
+
+        TIMER_INIT(test1);
+        TIMER_START(test1);
+        ret1 = hybrid(&arr);
+        TIMER_STOP(test1);
+        time1 = TIMER_ELAPSED_USEC(test1);
+
+        TIMER_INIT(test2);
+        TIMER_START(test2);
+        ret2 = divide_and_conquer(&arr);
+        TIMER_STOP(test2);
+        time2 = TIMER_ELAPSED_USEC(test2);
 
         int result = subarray_is_equal(&ret1, &ret2);
         if (result == 2) {
@@ -294,7 +299,7 @@ int main() {
             subarray_print(&ret1);
             subarray_print(&ret2);
         }
-        printf("\ttime(us) - %ld : %ld\n", time1, time2);
+        printf("\ttime - %.6f : %.6f\n", time1, time2);
     }
 
     sarray_free(&arr);
