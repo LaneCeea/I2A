@@ -1,5 +1,6 @@
 #include "sarray.h"
 
+#include "pcg32.h"
 #include "log.h"
 #include <inttypes.h>
 #include <stdio.h>
@@ -41,3 +42,10 @@ void sarray_output(const sarray* arr) {
     }
     printf("\n");
 }
+
+void sarray_random(sarray* arr, sarray_data_t lower, sarray_data_t upper) {
+    for (size_t i = 0; i < arr->size; ++i) {
+        arr->data[i] = pcg32_uniform_lemire(lower, upper);
+    }
+}
+

@@ -23,7 +23,12 @@ UTIL_SRCS := $(wildcard $(UTIL_DIR)/*.c)
 UTIL_OBJS := $(patsubst $(UTIL_DIR)/%.c, $(OBJ_DIR)/%.o, $(UTIL_SRCS))
 
 # Chapter targets (add more as needed)
-TARGETS := 02-insertion-sort 02-merge-sort 02-binary-search 04-max-subarray
+TARGETS := \
+	02-insertion-sort \
+	02-merge-sort \
+	02-binary-search \
+	04-max-subarray \
+	06-heap-sort
 
 # Default target builds all
 .PHONY: all clean utils $(TARGETS)

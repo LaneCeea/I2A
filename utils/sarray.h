@@ -49,3 +49,5 @@ void sarray_input(sarray* arr);
  *       Even if the size of the array is 0, it is safe to call.
  */
 void sarray_output(const sarray* arr);
+
+void sarray_random(sarray* arr, sarray_data_t lower, sarray_data_t upper);

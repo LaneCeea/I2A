@@ -251,13 +251,6 @@ static struct subarray kadane(const sarray* arr) {
 // main
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static inline
-void sarray_random(sarray* arr, int lower, int upper) {
-    for (size_t i = 0; i < arr->size; ++i) {
-        arr->data[i] = pcg32_uniform_lemire(lower, upper);
-    }
-}
-
 int main() {
     sarray arr;
     size_t size = 0;
