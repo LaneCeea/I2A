@@ -203,11 +203,11 @@ The loop invariant ensures that the index of the first \(F\) lies in the range \
 
     First, let's show that the loop can correctly terminate. In each iteration, we see that \(count\) gets cut down in half in both branches. More carefully speaking, with the fact that
     \[
-        \lfloor count / 2 \rfloor \leq (count-1) / 2,
+        \lfloor count / 2 \rfloor \leq count / 2, \quad \text{if } count > 0,
     \]
     and the update value \(count' \in \{\lfloor count / 2 \rfloor, \lfloor count / 2 \rfloor - 1\}\), this gives
     \[
-        0 \leq count' < count.
+        0 \leq count' \leq count / 2 < count.
     \]
 
     Thus, \(count\) must hit 0 at some point, which means that the loop always terminates.
@@ -221,5 +221,72 @@ The loop invariant ensures that the index of the first \(F\) lies in the range \
     \]
     Therefore, \(first\) is the correct answer, the index of the first \(F\).
 \end{enumerate}
+
+\section*{Complexity}
+
+Let \(t\) be the number of loop iterations executed. We aim to show that \(t = \Theta(\log n)\). Define \(f : \mathbb{N} \to \mathbb{N}\) where \(f(k)\) is the value of \(count\) at the start of the \(k\)-th iteration, then we have
+\begin{align*}
+    f(0) = n, & \quad f(t) = 0, \\
+    \floor*{\frac{f(k)}{2}} - 1 \quad \leq \quad & f(k+1) \quad \leq \quad \floor*{\frac{f(k)}{2}} \\
+    \Rightarrow \quad \frac{f(k)}{2} - \frac{3}{2} \quad \leq \quad & f(k+1) \quad \leq \quad \frac{f(k)}{2}.
+\end{align*}
+Note that the left-hand side comes from \verb|count = count - count_half - 1|.
+
+\subsubsection*{Upper Bound.}
+
+Consider the right-hand part where we cut the least, the recursion gives the worst result:
+\[
+    f(k) \leq \frac{n}{2^k}.
+\]
+Choose \(t_2 = \ceil{\log_2 n}\), then
+\[
+    2^{t_2} \geq n
+\]
+\[
+    \Rightarrow \quad f(t_2) \leq \frac{n}{2^{t_2}} \leq 1
+\]
+Thus, we at most need \(t_2 + 1\) iteration to hit 0.
+\[
+    t \leq t_2 + 1 = \ceil{\log_2 n} + 1
+\]
+\[
+    \Rightarrow \quad t = O(\log n).
+\]
+
+\subsubsection*{Lower Bound.}
+
+Consider the left-hand part where we cut the most, the recursion gives the best result:
+\begin{align*}
+    f(k) \quad & \geq \quad \frac{f(k-1)}{2} - \frac{3}{2} \\
+    \Rightarrow \quad f(k) + 3 \quad & \geq \quad \frac{1}{2} (f(k-1) + 3) \\
+    \Rightarrow \quad f(k) + 3 \quad & \geq \quad \frac{1}{2^k} (f(0) + 3) \\
+    \Rightarrow \quad f(k) \quad & \geq \quad \frac{n + 3}{2^k} - 3
+\end{align*}
+Now we want to choose \(t_1\) such that \(f(t_1) \geq 1\), so we at least need \(t_1 + 1\) iteration to hit 0.
+\[
+    \frac{n + 3}{2^{t_1}} - 3 \geq 1
+\]
+\[
+    \Rightarrow \quad \frac{n + 3}{2^{t_1}} \geq 4
+\]
+\[
+    \Rightarrow \quad \log_2(n + 3) - t_1 \geq 2
+\]
+\[
+    \Rightarrow \quad t_1 \leq \log_2(n + 3) - 2
+\]
+Choose \(t_1 = \floor*{\log_2(n + 3)} - 2\), then
+\[
+    t \geq t_1 + 1 = \floor*{\log_2(n + 3)} - 1
+\]
+\[
+    \Rightarrow \quad t = \Omega(\log n).
+\]
+
+\subsection*{Summary.}
+The algorithm completes in \(\Theta(\log n)\) iterations. Each iteration performs \(O(1)\) arithmetic operations and one comparison, so the running time is \(\Theta(\log n)\).
+
+\subsection*{Extra Space.}
+The algorithm keeps three index variables: \(first\), \(count\) and \(mid\), so the space usage is \(O(1)\).
 
 \end{document}
