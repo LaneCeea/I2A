@@ -28,7 +28,8 @@ TARGETS := \
 	02-merge-sort \
 	02-binary-search \
 	04-max-subarray \
-	06-heap-sort
+	06-heap-sort \
+	07-quick-sort
 
 # Default target builds all
 .PHONY: all clean utils $(TARGETS)
