@@ -62,25 +62,25 @@ size_t partition_lomuto(sarray* arr, size_t first, size_t last) {
 static
 size_t partition_hoare(sarray* arr, size_t first, size_t last) {
     int pivot = arr->data[first];
-    size_t i = first;
+    size_t i = first + 1;
     size_t j = last;
     for (;;) {
-        // data[first .. i] <= pivot < data[j .. last)
-        do {
+        // data[first .. i) <= pivot < data[j .. last)
+        while (i < j && arr->data[i] <= pivot) {
             ++i;
-        } while (i <= last && arr->data[i] <= pivot);
-        do {
+        }
+        while (i < j && pivot < arr->data[j - 1]) {
             --j;
-        } while (j >= first && pivot < arr->data[j]);
+        }
         if (i >= j) {
             break;
         }
+        --j;
         swap(arr, i, j);
+        ++i;
     }
-    if (first <= j && arr->data[first] > arr->data[j]) {
-        swap(arr, first, j);
-    }
-    return j;
+    swap(arr, first, i - 1);
+    return i - 1;
 }
 
 static
