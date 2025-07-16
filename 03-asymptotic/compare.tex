@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, total={17.18cm, 24.62cm}]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section*{Definition}
+
+Given two functions \(f : \mathbb{N} \to \mathbb{R}\) and \(g : \mathbb{N} \to \mathbb{R}\),
+\begin{align*} 
+    f(n) \in O(g(n)) \quad \Longleftrightarrow \quad & \exists \, c \in \mathbb{R}^+ \text{ and } n_0  \in \mathbb{N} \text{ such that} \\
+    & 0 \leq f(n) \leq c \, g(n), \quad \forall n \geq n_0, \\
+    f(n) \in o(g(n)) \quad \Longleftrightarrow \quad & \forall \, c \in \mathbb{R}^+, \quad \exists \; n_0 \in \mathbb{N} \text{ such that} \\
+    & 0 \leq f(n) < c \, g(n), \quad \forall n \geq n_0.
+\end{align*}
+
+\section*{Claim}
+
+While the textbook uses ``\(\leq\)'' for big-\(O\) and ``\(<\)'' for little-\(o\), this distinction is NOT generally mathematical but rather stylistic. The choose to use different inequality signs serves to highlight the difference in growth rates. In reality, the two signs are \textbf{mostly interchangeable}, and the key distinction lies in the quantification of the constant \(c\).
+
+\section*{Statement}
+
+We define another set of notations with different inequality signs as follow,
+\begin{align*} 
+    f(n) \in O'(g(n)) \quad \Longleftrightarrow \quad & \exists \, c' \in \mathbb{R}^+ \text{ and } n_0  \in \mathbb{N} \text{ such that} \\
+    & 0 \leq f(n) < c' \, g(n), \quad \forall n \geq n_0, \\
+    f(n) \in o'(g(n)) \quad \Longleftrightarrow \quad & \forall \, c' \in \mathbb{R}^+, \quad \exists \; n_0 \in \mathbb{N} \text{ such that} \\
+    & 0 \leq f(n) \leq c' \, g(n), \quad \forall n \geq n_0.
+\end{align*}
+And we aim to prove that \(O(g(n)) = O'(g(n))\) and \(o(g(n)) = o'(g(n))\), given any \(g: \mathbb{N} \to \mathbb{R}\). (Spoiler: actually not \textit{every} \(g\) satisfies, as we shall see that there is a pitfall.)
+
+\newpage
+
+\section*{Proof of Big-O}
+
+\begin{enumerate}
+    \item \fbox{\(O(g(n)) \subseteq O'(g(n))\)}
+
+    Given any function \(f: \mathbb{N} \to \mathbb{R}\) with \(f \in O(g(n))\), we have positive constants \(c\) and \(n_0\) such that for all integers \(n \geq n_0\),
+    \[
+        0 \leq f(n) \leq c \, g(n).
+    \]
+    This means that for all real number \(c' > c\), and assume that \(g(n) \neq 0\), we have
+    \[
+        0 \leq f(n) \leq c \, g(n) < c' \, g(n).
+    \]
+    Thus, we have witnesses \(c'\) and \(n_0\) that satisfy \(f(n) \in O'(g(n))\).
+
+    \item \fbox{\(O'g(n) \subseteq O(g(n))\)}
+
+    This is rather trivial since \(f(n) < c \, g(n)\) implies \(f(n) \leq c \, g(n)\).
+\end{enumerate}
+Therefore, \(O(g(n) = O'(g(n)))\), and whether we use ``\(\leq\)'' or ``\(<\)'' does not matter.
+
+\section*{Proof of Little-o}
+\begin{enumerate}
+    \item \fbox{\(o(g(n)) \subseteq o'(g(n))\)}
+
+    Similarly, \(f(n) < c \, g(n)\) implies \(f(n) \leq c \, g(n)\).
+
+    \item \fbox{\(o'(g(n)) \subseteq o(g(n))\)}
+
+    Given any \(f: \mathbb{N} \to \mathbb{R}\) with \(f(n) \in o'(g(n))\), we have that for all positive real numbers \(c'\), there exists \(n_0\) such that for all integers \(n \geq n_0\),
+    \[
+        0 \leq f(n) \leq c' \, g(n).
+    \]
+    Then, given any real numbers \(c > 0\), we can always find \(c' \in (0, c)\) such that
+    \[
+        0 \leq f(n) \leq c' \, g(n) < c \, g(n),
+    \]
+    assuming that \(g(n) \neq 0\). Thus, for any \(c > 0\), we have \(n_0\) that satisfy \(f(n) \in o (g(n))\).
+\end{enumerate}
+Therefore, \(o(g(n)) = o'(g(n))\), and whether we use ``\(\leq\)'' or ``\(<\)'' does not matter.
+
+\section*{Conclusion}
+
+We have shown that swapping the strict and non-strict inequalities in the definitions of the asymptotic classes \(O(\,{\cdot}\,)\) and \(o(\,{\cdot}\,)\) does not change the sets of functions:
+\[
+   O(g(n)) = O'(g(n)), \quad  o(g(n)) = o'(g(n)).
+\]
+
+The decisive feature for big-\(O\) is the \emph{existential} quantifier (\(\exists\,c>0\)); for little-\(o\), it is the \emph{universal} quantifier (\(\forall\,c>0\)). Whether the bound is written with ``\(\leq\)'' or ``\(<\)'' is mostly a matter of convention.
+
+However, our proof assumes that \(g(n) \neq 0\) eventually. In the rare case where \(g(n)\) becomes zero asymptotically—i.e., \(g(n) = 0\) for all sufficiently large \(n\)—the definitions diverge:
+\[
+    O(g(n)) = \{ f(n) \mid f(n) \text{ is asymptotically zero} \}, \quad O'(g(n)) = \varnothing,
+\]
+\[
+    o(g(n)) = \varnothing, \quad o'(g(n)) = \{ f(n) \mid f(n) \text{ is asymptotically zero} \}.
+\]
+
+Such behavior is not encountered in typical algorithmic or analytic settings, so this edge case can be safely ignored in practice.
+
+Thus, the common choice to use ``\(\leq\)'' in big-\(O\) (emphasizing a \textit{bound}) and ``\(<\)'' in little-\(o\) (emphasizing a \textit{strict} vanishing rate) serves only as a helpful visual cue; mathematically, the two forms are interchangeable under standard assumptions.
+
+
+\end{document}
